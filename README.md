@@ -168,6 +168,11 @@ docs: update README with functionality overview
 
 ---
 
+## APK DRIVE LINK
+https://drive.google.com/file/d/1H9lkqyDWDJgQaJ23xwYkNll3aAeMxazp/view?usp=sharing
+
+---
+
 ## 📄 License
 
 Licensed under MIT. See [LICENSE](LICENSE) for details.
