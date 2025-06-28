@@ -9,23 +9,32 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
     _initializeApp();
   }
 
-  Future<void> _initializeApp() async {
-    await Future.delayed(const Duration(seconds: 5));
-    if (mounted) {
-      Navigator.pushReplacementNamed(context, '/home');
-    }
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _initializeApp() {
+    _timer = Timer(const Duration(seconds: 5), () {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF800080),
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: Center(
         child: Image.asset("assets/images/splash_screen.png", width: 200),
       ),

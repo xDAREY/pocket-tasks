@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -18,8 +18,8 @@ dependencies:
   hive_flutter: ^1.1.0
   intl: ^0.19.0
   uuid: ^4.0.0
-  table_calendar: ^3.0.9
   url_launcher: ^6.3.1
+  package_info_plus: ^8.3.0
 
 dev_dependencies:
   flutter_test:
@@ -34,7 +34,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/fonts/
-    - assets/images/
+    - assets/images/splash_screen.png
 
   # fonts:
   #   - family: Montserrat
@@ -52,7 +52,7 @@ flutter_launcher_icons:
   remove_alpha_ios: true
 
 flutter_native_splash:
-  color: "#800080" 
+  color: "#ffffff" 
   image: assets/images/splash_screen.png
   android: true
   ios: true

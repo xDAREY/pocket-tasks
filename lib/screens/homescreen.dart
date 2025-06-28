@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocket_tasks/screens/settings_screen.dart';
 import 'package:pocket_tasks/state/task_provider.dart';
-import 'package:pocket_tasks/state/theme_provider.dart';
-import 'package:pocket_tasks/widgets/filter_chips.dart';
+import 'package:pocket_tasks/utils/themes.dart';
+import 'package:pocket_tasks/widgets/filter_options.dart';
 import 'package:pocket_tasks/widgets/task_tile.dart';
 import 'add_edit_task_screen.dart';
 
@@ -18,7 +18,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const TasksHomeView(), 
+    const TasksHomeView(),
     const SettingsScreen(),
   ];
 
@@ -30,17 +30,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = ref.watch(themeColorProvider);
-    
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        selectedItemColor: themeColor,
+        selectedItemColor: isDarkMode ? AppThemes.primaryBeige : AppThemes.darkBrown,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Settings'),
         ],
         onTap: _onItemTapped,
       ),
@@ -48,7 +49,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
-// Extract your main tasks view into a separate widget
 class TasksHomeView extends ConsumerWidget {
   const TasksHomeView({super.key});
 
@@ -63,7 +63,8 @@ class TasksHomeView extends ConsumerWidget {
         actions: [
           PopupMenuButton<TaskSort>(
             icon: const Icon(Icons.sort),
-            onSelected: (sort) => ref.read(taskSortProvider.notifier).state = sort,
+            onSelected: (sort) =>
+                ref.read(taskSortProvider.notifier).state = sort,
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: TaskSort.createdDate,
@@ -75,15 +76,11 @@ class TasksHomeView extends ConsumerWidget {
               ),
             ],
           ),
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: () => ref.read(themeProvider.notifier).toggleTheme(),
-          ),
         ],
       ),
       body: Column(
         children: [
-          const TaskFilterChips(),
+          const FilterOptions(),
           Expanded(
             child: tasks.isEmpty
                 ? _buildEmptyState(context, currentFilter)

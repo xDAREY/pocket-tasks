@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocket_tasks/state/task_provider.dart';
 
-class TaskFilterChips extends ConsumerWidget {
-  const TaskFilterChips({super.key});
+class FilterOptions extends ConsumerWidget {
+  const FilterOptions({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,7 +17,7 @@ class TaskFilterChips extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          _buildFilterChip(
+          _buildFilterOptions(
             context,
             ref,
             'All (${tasks.length})',
@@ -25,7 +25,7 @@ class TaskFilterChips extends ConsumerWidget {
             currentFilter == TaskFilter.all,
           ),
           const SizedBox(width: 8),
-          _buildFilterChip(
+          _buildFilterOptions(
             context,
             ref,
             'Active ($activeTasks)',
@@ -33,7 +33,7 @@ class TaskFilterChips extends ConsumerWidget {
             currentFilter == TaskFilter.active,
           ),
           const SizedBox(width: 8),
-          _buildFilterChip(
+          _buildFilterOptions(
             context,
             ref,
             'Completed ($completedTasks)',
@@ -45,16 +45,37 @@ class TaskFilterChips extends ConsumerWidget {
     );
   }
 
-  Widget _buildFilterChip(
+  Widget _buildFilterOptions(
     BuildContext context,
     WidgetRef ref,
     String label,
     TaskFilter filter,
     bool isSelected,
   ) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return FilterChip(
-      label: Text(label),
+      label: Text(
+        label,
+        style: TextStyle(
+          color: isSelected 
+            ? (isDarkMode ? Colors.black : Colors.white) 
+            : (isDarkMode ? Colors.white : Colors.black),
+        ),
+      ),
       selected: isSelected,
+      selectedColor: isDarkMode 
+        ? const Color(0xFFF5E6D3)  
+        : const Color(0xFF8B4513),
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: isDarkMode 
+            ? const Color(0xFFF5E6D3).withValues(alpha: 0.3)
+            : const Color(0xFF8B4513).withValues(alpha: 0.3),
+        ),
+      ),
       onSelected: (_) => ref.read(taskFilterProvider.notifier).state = filter,
     );
   }

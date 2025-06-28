@@ -21,7 +21,7 @@ class TaskTile extends ConsumerWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: task.isCompleted
-              ? Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5)
+              ? Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
               : null,
         ),
         child: ListTile(
@@ -35,7 +35,7 @@ class TaskTile extends ConsumerWidget {
             style: TextStyle(
               decoration: task.isCompleted ? TextDecoration.lineThrough : null,
               color: task.isCompleted
-                  ? Theme.of(context).colorScheme.onSurface.withOpacity(0.6)
+                  ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
                   : null,
             ),
           ),
@@ -51,7 +51,7 @@ class TaskTile extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: task.isCompleted
-                          ? Theme.of(context).colorScheme.onSurface.withOpacity(0.4)
+                          ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)
                           : null,
                     ),
                   ),

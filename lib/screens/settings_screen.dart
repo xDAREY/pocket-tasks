@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocket_tasks/services/version_service.dart';
+import 'package:pocket_tasks/state/theme_provider.dart';
 import 'package:pocket_tasks/utils/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-
-final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.system);
-final themeColorProvider = StateProvider<Color>((ref) => AppThemes.darkBrown);
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -13,7 +11,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final themeMode = ref.watch(themeModeProvider);
+    final themeMode = ref.watch(themeProvider); 
     
     return Scaffold(
       appBar: AppBar(
@@ -29,7 +27,7 @@ class SettingsScreen extends ConsumerWidget {
                 'General',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Theme.of(context).primaryColor,
+                  color: isDarkMode ? Colors.white : AppThemes.darkBrown,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -45,41 +43,17 @@ class SettingsScreen extends ConsumerWidget {
                   SwitchListTile(
                     title: const Text('Dark Mode'),
                     subtitle: const Text('Switch between light and dark themes'),
-                    value: themeMode == ThemeMode.dark || 
-                          (themeMode == ThemeMode.system && isDarkMode),
+                    value: themeMode == ThemeMode.dark ||
+                        (themeMode == ThemeMode.system && isDarkMode),
                     onChanged: (value) {
-                      ref.read(themeModeProvider.notifier).state = 
-                          value ? ThemeMode.dark : ThemeMode.light;
+                      ref.read(themeProvider.notifier).setTheme(
+                        value ? ThemeMode.dark : ThemeMode.light
+                      );
                     },
                     secondary: Icon(
                       isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary, 
                     ),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.color_lens,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    title: const Text('Theme Color'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.chevron_right),
-                      ],
-                    ),
-                    onTap: () {
-                      _showColorPicker(context, ref);
-                    },
                   ),
                 ],
               ),
@@ -90,7 +64,7 @@ class SettingsScreen extends ConsumerWidget {
                 'App Information',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Theme.of(context).primaryColor,
+                  color: isDarkMode ? Colors.white : AppThemes.darkBrown,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -103,24 +77,35 @@ class SettingsScreen extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                  ListTile(
+                    ListTile(
                     leading: Icon(
                       Icons.info,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     title: const Text('App Version'),
-                    trailing: const Text('1.2.3'),
-                  ),
+                    subtitle: ref.watch(versionProvider).when(
+                      data: (version) => Text(
+                        version,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      loading: () => const Text(
+                        'Loading...',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      error: (error, stack) => const Text(
+                        'Error',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    ),
                   ListTile(
                     leading: Icon(
                       Icons.update,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     title: const Text('Check for Updates'),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-
-                    },
+                    onTap: () {},
                   ),
                 ],
               ),
@@ -131,7 +116,7 @@ class SettingsScreen extends ConsumerWidget {
                 'Support',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Theme.of(context).primaryColor,
+                  color: isDarkMode ? Colors.white : AppThemes.darkBrown,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -147,19 +132,18 @@ class SettingsScreen extends ConsumerWidget {
                   ListTile(
                     leading: Icon(
                       Icons.email,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     title: const Text('Contact Us'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () async {
                       final Uri emailLaunchUri = Uri(
-                        scheme: 'mailto',
-                        path: 'oluwadare.emmanuel15@gmail.com',
-                        queryParameters: {
-                          'subject': 'QR Create App Feedback'
-                        }
-                      );
-                      
+                          scheme: 'mailto',
+                          path: 'oluwadare.emmanuel15@gmail.com',
+                          queryParameters: {
+                            'subject': 'Pocket Tasks App Feedback'
+                          });
+
                       if (await canLaunchUrl(emailLaunchUri)) {
                         await launchUrl(emailLaunchUri);
                       } else {
@@ -178,7 +162,7 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
-  
+
   void _showContactDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -190,22 +174,19 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             const Text('For any queries or feedback, please contact:'),
             const SizedBox(height: 8),
-            const SelectableText('oluwadare.emmanuel15@gmail.com'), 
+            const SelectableText('oluwadare.emmanuel15@gmail.com'),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               icon: const Icon(Icons.email),
               label: const Text('Send Email'),
               onPressed: () async {
                 Navigator.pop(context);
-                
+
                 final Uri emailLaunchUri = Uri(
-                  scheme: 'mailto',
-                  path: 'oluwadare.emmanuel15@gmail.com',
-                  queryParameters: {
-                    'subject': 'QR Create App Feedback'
-                  }
-                );
-                
+                    scheme: 'mailto',
+                    path: 'oluwadare.emmanuel15@gmail.com',
+                    queryParameters: {'subject': 'Pocket Tasks App Feedback'}); 
+
                 if (await canLaunchUrl(emailLaunchUri)) {
                   await launchUrl(emailLaunchUri);
                 }
@@ -222,76 +203,6 @@ class SettingsScreen extends ConsumerWidget {
             child: const Text('Close'),
           ),
         ],
-      ),
-    );
-  }
-  
-  void _showColorPicker(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Choose Theme Color'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                _colorOption(context, ref, AppThemes.darkBrown),
-                _colorOption(context, ref, AppThemes.lightBeige),
-                _colorOption(context, ref, Colors.blue),
-                _colorOption(context, ref, Colors.green),
-                _colorOption(context, ref, Colors.red),
-                _colorOption(context, ref, Colors.orange),
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Apply'),
-          ),
-        ],
-      ),
-    );
-  }
-  
-  Widget _colorOption(BuildContext context, WidgetRef ref, Color color) {
-    final currentColor = ref.watch(themeColorProvider);
-    final isSelected = currentColor == color;
-    
-    return GestureDetector(
-      onTap: () {
-        ref.read(themeColorProvider.notifier).state = color;
-      },
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: isSelected
-              ? Border.all(color: Colors.white, width: 3)
-              : null,
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black,
-              spreadRadius: 1,
-              blurRadius: 3,
-            ),
-          ],
-        ),
-        child: isSelected
-            ? const Icon(Icons.check, color: Colors.white)
-            : null,
       ),
     );
   }

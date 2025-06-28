@@ -8,12 +8,10 @@ class StorageService {
   static Future<void> init() async {
     await Hive.initFlutter();
     
-    // Register both adapters
     if (!Hive.isAdapterRegistered(0)) {
       Hive.registerAdapter(TaskAdapter());
     }
     
-    // Register the TaskPriority adapter
     if (!Hive.isAdapterRegistered(1)) {
       Hive.registerAdapter(TaskPriorityAdapter());
     }
@@ -48,7 +46,6 @@ class StorageService {
     return taskBox.get(id);
   }
 
-  // Additional helper methods
   static List<Task> getCompletedTasks() {
     return taskBox.values.where((task) => task.isCompleted).toList();
   }

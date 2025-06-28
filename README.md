@@ -1,119 +1,158 @@
 # Pocket Tasks
 
-A simple and elegant task management app built with Flutter.
+A user-friendly task management app built with Flutter and Riverpod, designed for clean architecture and seamless offline support.
 
-## Features
+---
 
-- ✅ Add, edit, delete, and mark tasks as complete/incomplete
-- 📱 Clean and responsive UI with Material Design 3
-- 🌙 Light and dark theme support
-- 📊 Filter tasks by status (All, Active, Completed)
-- 📅 Sort tasks by due date or creation date
-- 💾 Local storage using Hive
-- ✨ Smooth animations and transitions
+## 🚀 Features
 
-## Screenshots
+* **CRUD Tasks**: Add, edit, delete, and toggle completion
+* **Filtering**: View All, Active, or Completed tasks
+* **Sorting**: By Due Date or Creation Date
+* **Theming**: Responsive Light & Dark modes
+* **Offline First**: Local storage via Hive with offline access
+* **Clean UI**: Material Design 3, rounded cards, subtle shadows
 
-[Add screenshots here]
+---
 
-## Getting Started
+## 🎨 UI / Screens
 
-### Prerequisites
+1. **Task List**
 
-- Flutter 3.22.0 or higher
-- Dart SDK 3.0.0 or higher
+   * Filter chips (All / Active / Completed)
+   * Sort dropdown menu
+   * Swipe tasks to delete or mark complete
+   * Floating Action Button to add new tasks
 
-### Installation
+2. **Add / Edit Task**
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/pocket_tasks.git
-cd pocket_tasks
+   * **Form Fields**: Title (required), Notes (optional)
+   * **Date Picker**: Select or clear due date
+   * **Completion Toggle** (in edit mode)
+   * Save button in AppBar for quick access
 
-2. Install dependencies:
-```bash
-flutter pub get
+3. **Task Details** *(optional)*
 
-3. Generate Hive adapters:
-```bash
+   * Full task info: title, notes, created/updated timestamps, due date, status
+   * Actions: Edit or Delete
 
-flutter packages pub run build_runner build
+---
 
-4. Run the app:
-```bash
-flutter run
+## 🛠️ Functionality Overview
 
+### Add / Edit Task Screen
 
-## Architecture
-# State Management
-This app uses Riverpod for state management, chosen for its:
+```dart
+class AddEditTaskScreen extends ConsumerStatefulWidget { ... }
+```
 
-Compile-time safety
-Better testing capabilities
-Excellent provider composition
-Built-in caching and automatic disposal
+* Uses a **Form** with validation on the title
+* Initializes fields when editing an existing task
+* `_selectDate()` invokes `showDatePicker` for due date selection
+* `_saveTask()` reads form state and calls:
 
-## Project Structure
+  ```dart
+  if (isEditing) {
+    ref.read(taskListProvider.notifier).updateTask(task);
+  } else {
+    ref.read(taskListProvider.notifier).addTask(task);
+  }
+  ```
+
+### Task Details Screen
+
+```dart
+class TaskDetailsScreen extends ConsumerWidget { ... }
+```
+
+* Displays a **Card** with checkbox + title, strikes through completed tasks
+* Shows notes and task metadata in styled rows
+* Provides Edit and Delete icons in AppBar
+* `_showDeleteDialog()` confirms before removal:
+
+  ```dart
+  ref.read(taskListProvider.notifier).deleteTask(task.id);
+  ```
+
+---
+
+## 📦 State Management & Code Snippets
+
+* **Providers**:
+
+  ```dart
+  final taskListProvider = StateNotifierProvider<TaskNotifier, List<Task>>(...);
+  final taskFilterProvider = StateProvider<TaskFilter>((_) => TaskFilter.all);
+  final taskSortProvider   = StateProvider<TaskSort>((_) => TaskSort.createdDate);
+  ```
+* **Filtering & Sorting** combined in `filteredTasksProvider`:
+
+  ```dart
+  final filteredTasksProvider = Provider<List<Task>>((ref) {
+    final tasks = ref.watch(taskListProvider);
+    // apply filter, then sort...
+  });
+  ```
+
+---
+
+## 🏛️ Architecture
+
+```
 lib/
-├── main.dart                 # App entry point
-├── models/                   # Data models
-├── providers/                # Riverpod providers
-├── screens/                  # UI screens
-├── widgets/                  # Reusable widgets
-├── services/                 # Business logic services
-└── utils/                    # Utilities and themes
+├── models/      # Task model, -g.
+├── providers/   # TaskProvider & ThemeProvider
+├── screens/     # HomeScreen, AddEditTask, TaskDetails
+├── services/    # Hive storage service
+├── widgets/     # TaskItem, FilterOptions, SortDropdown etc
+└── utils/       # ThemeData
+```
 
-## Key Design Decisions
+Key decisions:
 
-1. Hive for Local Storage: Chosen for its performance and ease of use with custom objects
-2. Material Design 3: Modern UI following Google's latest design guidelines
-Provider Pattern: Clean separation of business logic from UI
-Modular Architecture: Easy to maintain and extend
+1. **Riverpod** for modular, testable state logic
+2. **Hive** for performant JSON-like storage
 
-## Testing
-Run tests with:
+
+---
+
+## 📦 Build & Release
+
 ```bash
-flutter test
-
-The app includes:
-    Unit tests for models and business logic
-    Widget tests for UI components
-    Integration tests for user workflows
-
-Building
-
-Debug Build
-```bash
-flutter run
-
+# Install deps
+git clone ... && cd pocket_tasks
+flutter pub get
+# Codegen
+flutter pub run build_runner build
+# Debuglutter run
 # Release APK
+flutter build apk --split-per-abi
+```
+
+APK artifacts: `build/app/outputs/flutter-apk/`
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create a branch: `git checkout -b feat/your-feature`
+3. Commit with semantic messages
+4. Push and open a PR
+
+---
+
+## 🏷️ Commit Message Examples
+
 ```bash
-flutter build apk --release
+feat: add TaskFilter and TaskSort enums
+feat: implement TaskNotifier with Hive storage
+test: add widget test for TaskCard
+docs: update README with functionality overview
+```
 
+---
 
-## The APK will be generated in build/app/outputs/flutter-apk/
-Contributing
+## 📄 License
 
-Fork the repository
-Create a feature branch
-Make your changes
-Add tests for new features
-Submit a pull request
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Commit Messages Examples
-
-```bash
-git commit -m "feat: add task model with Hive annotations"
-git commit -m "feat: implement Riverpod state management"
-git commit -m "feat: create home screen with task list"
-git commit -m "feat: add task filtering and sorting"
-git commit -m "feat: implement add/edit task functionality"
-git commit -m "feat: add task details screen"
-git commit -m "feat: implement theme switching"
-git commit -m "test: add unit tests for task model"
-git commit -m "test: add widget tests for task tile"
-git commit -m "docs: update README with installation instructions"
-git commit -m "build: configure release build settings"
+Licensed under MIT. See [LICENSE](LICENSE) for details.

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppThemes {
-  // Color palette matching your design
   static const Color primaryBeige = Color(0xFFF5E6D3);
   static const Color lightBeige = Color(0xFFFAF0E6);
   static const Color darkBrown = Color(0xFF8B4513);

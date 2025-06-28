@@ -167,8 +167,8 @@ class TaskDetailsScreen extends ConsumerWidget {
           TextButton(
             onPressed: () {
               ref.read(taskListProvider.notifier).deleteTask(task.id);
-              Navigator.of(context).pop(); // Close dialog
-              Navigator.of(context).pop(); // Go back to home
+              Navigator.of(context).pop(); 
+              Navigator.of(context).pop();
             },
             child: const Text('Delete'),
           ),
