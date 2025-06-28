@@ -116,6 +116,22 @@ Key decisions:
 
 ---
 
+## Snapshot
+# light mode:
+![Screenshot_1751136503](https://github.com/user-attachments/assets/620ed2bb-4a2d-48bc-ad8a-43f2045b57b1)
+
+![Screenshot_1751136497](https://github.com/user-attachments/assets/d13dd43e-c230-464e-8cd8-dd7927e14267)
+
+## dark mode:
+![Screenshot_1751136518](https://github.com/user-attachments/assets/fdea71b5-d1e3-4e48-b05c-ea1a2d2b30a7)
+
+![Screenshot_1751136513](https://github.com/user-attachments/assets/6d3d51ab-90cb-4b09-bf1a-8b565dc0846d)
+
+
+
+---
+
+
 ## 📦 Build & Release
 
 ```bash
