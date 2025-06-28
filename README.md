@@ -145,9 +145,8 @@ APK artifacts: `build/app/outputs/flutter-apk/`
 ## 🏷️ Commit Message Examples
 
 ```bash
-feat: add TaskFilter and TaskSort enums
-feat: implement TaskNotifier with Hive storage
-test: add widget test for TaskCard
+feat: add TaskFilter and TaskSort 
+feat: implement  Hive storage
 docs: update README with functionality overview
 ```
 

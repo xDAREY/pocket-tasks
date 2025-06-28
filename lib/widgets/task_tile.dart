@@ -114,7 +114,7 @@ class TaskTile extends ConsumerWidget {
   void _navigateToDetails(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => TaskDetailsScreen(task: task),
+        builder: (context) => TaskDetailsScreen(taskId: task.id),
       ),
     );
   }

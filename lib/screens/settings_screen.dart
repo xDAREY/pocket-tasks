@@ -11,8 +11,8 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final themeMode = ref.watch(themeProvider); 
-    
+    final themeMode = ref.watch(themeProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -47,12 +47,12 @@ class SettingsScreen extends ConsumerWidget {
                         (themeMode == ThemeMode.system && isDarkMode),
                     onChanged: (value) {
                       ref.read(themeProvider.notifier).setTheme(
-                        value ? ThemeMode.dark : ThemeMode.light
+                        value ? ThemeMode.dark : ThemeMode.light,
                       );
                     },
                     secondary: Icon(
                       isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                      color: Theme.of(context).colorScheme.primary, 
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],
@@ -77,7 +77,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                    ListTile(
+                  ListTile(
                     leading: Icon(
                       Icons.info,
                       color: Theme.of(context).colorScheme.primary,
@@ -97,7 +97,7 @@ class SettingsScreen extends ConsumerWidget {
                         style: TextStyle(color: Colors.red),
                       ),
                     ),
-                    ),
+                  ),
                   ListTile(
                     leading: Icon(
                       Icons.update,
@@ -138,19 +138,17 @@ class SettingsScreen extends ConsumerWidget {
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () async {
                       final Uri emailLaunchUri = Uri(
-                          scheme: 'mailto',
-                          path: 'oluwadare.emmanuel15@gmail.com',
-                          queryParameters: {
-                            'subject': 'Pocket Tasks App Feedback'
-                          });
+                        scheme: 'mailto',
+                        path: 'oluwadare.emmanuel15@gmail.com',
+                        queryParameters: {
+                          'subject': 'Pocket Tasks App Feedback'
+                        },
+                      );
 
-                      if (await canLaunchUrl(emailLaunchUri)) {
-                        await launchUrl(emailLaunchUri);
-                      } else {
-                        if (context.mounted) {
-                          _showContactDialog(context);
-                        }
-                      }
+                      await launchUrl(
+                        emailLaunchUri,
+                        mode: LaunchMode.externalApplication,
+                      );
                     },
                   ),
                 ],
@@ -159,50 +157,6 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 24),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showContactDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Contact Developer'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('For any queries or feedback, please contact:'),
-            const SizedBox(height: 8),
-            const SelectableText('oluwadare.emmanuel15@gmail.com'),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.email),
-              label: const Text('Send Email'),
-              onPressed: () async {
-                Navigator.pop(context);
-
-                final Uri emailLaunchUri = Uri(
-                    scheme: 'mailto',
-                    path: 'oluwadare.emmanuel15@gmail.com',
-                    queryParameters: {'subject': 'Pocket Tasks App Feedback'}); 
-
-                if (await canLaunchUrl(emailLaunchUri)) {
-                  await launchUrl(emailLaunchUri);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 45),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
       ),
     );
   }

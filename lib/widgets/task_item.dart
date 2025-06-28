@@ -16,7 +16,6 @@ class TaskItem extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            // Checkbox
             GestureDetector(
               onTap: () => ref.read(taskListProvider.notifier).toggleTask(task.id),
               child: Container(
@@ -46,8 +45,6 @@ class TaskItem extends ConsumerWidget {
             ),
             
             const SizedBox(width: 16),
-            
-            // Task content
             Expanded(
               child: GestureDetector(
                 onTap: () => Navigator.push(

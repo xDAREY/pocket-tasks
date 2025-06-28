@@ -6,23 +6,26 @@ import 'package:pocket_tasks/state/task_provider.dart';
 import 'add_edit_task_screen.dart';
 
 class TaskDetailsScreen extends ConsumerWidget {
-  final Task task;
+  final String taskId; 
 
-  const TaskDetailsScreen({super.key, required this.task});
+  const TaskDetailsScreen({super.key, required this.taskId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tasks = ref.watch(taskListProvider);
+    final task = tasks.firstWhere((t) => t.id == taskId);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task Details'),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () => _navigateToEdit(context),
+            onPressed: () => _navigateToEdit(context, task),
           ),
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () => _showDeleteDialog(context, ref),
+            onPressed: () => _showDeleteDialog(context, ref, task),
           ),
         ],
       ),
@@ -145,7 +148,7 @@ class TaskDetailsScreen extends ConsumerWidget {
     );
   }
 
-  void _navigateToEdit(BuildContext context) {
+  void _navigateToEdit(BuildContext context, Task task) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => AddEditTaskScreen(task: task),
@@ -153,7 +156,7 @@ class TaskDetailsScreen extends ConsumerWidget {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, WidgetRef ref) {
+  void _showDeleteDialog(BuildContext context, WidgetRef ref, Task task) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
